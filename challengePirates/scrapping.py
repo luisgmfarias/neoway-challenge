@@ -4,78 +4,84 @@ import pandas as pd
 import time
 import uuid
 
-# Setting webdriver headless option
-options = webdriver.ChromeOptions()
-options.add_argument('headless')
+def driver_init():
+    # Setting webdriver headless option
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
 
-# Initiating chrome webdriver
-driver = webdriver.Chrome(executable_path=r"driver/chromedriver")
+    # Initiating chrome webdriver
+    driver = webdriver.Chrome(executable_path=r"driver/chromedriver",options=options)
 
-# # BuscaCep page navigation
-search_page = "http://www.buscacep.correios.com.br/sistemas/buscacep/buscaFaixaCep.cfm"
-driver.get(search_page)
-
+    # # BuscaCep page navigation
+    search_page = "http://www.buscacep.correios.com.br/sistemas/buscacep/buscaFaixaCep.cfm"
+    return (driver.get(search_page))
 
 def get_data(uf_list):
 
     for option in uf_list:
-        #selecting UF option on drop down menu
+        # selecting UF option on drop down menu
         driver.find_element_by_xpath(
             "//select[@name='UF']/option[text()='" + option + "']").click()
         driver.find_element_by_xpath(
             '//*[@id="Geral"]/div/div/div[4]/input').click()
-        
-        #find table
+
+        # find table
         table = driver.find_element_by_xpath(
             '/html/body/div[1]/div[3]/div[2]/div/div/div[2]/div[2]/div[2]/table[2]')
 
         pagination(table)
 
-        #time delay
+        # time delay
         time.sleep(2)
         # return to the search page
         driver.find_element_by_xpath(
             '/html/body/div[1]/div[3]/div[2]/div/div/div[2]/div[2]/div[2]/div[3]/a').click()
 
+    return(uf_list)
+
 
 def pagination(table):
 
-    #running through all table pages
+    # running through all table pages
     for row in table.find_elements_by_tag_name('tr')[2:]:
         city = row.find_element_by_xpath('./td[1]')
         cep_range = row.find_element_by_xpath('./td[2]')
         insert_data(uuid.uuid4().int, city.text, cep_range.text)
 
-    #try-except to verify if button 'Proxima' (next page) is clickable or not
-    #this is important to check if it is the last page
+    # try-except to verify if button 'Proxima' (next page) is clickable or not
+    # this is important to check if it is the last page
     try:
         driver.find_element_by_xpath(
             '/html/body/div[1]/div[3]/div[2]/div/div/div[2]/div[2]/div[2]/div[2]/a').click()
     except WebDriverException:
         return 0
 
-    #recursiveness
+    # recursiveness
     pagination(driver.find_element_by_class_name('tmptabela'))
 
 
 def insert_data(id, city, cep_range):
     global uf_dataframe
-    #adding a row to our dataframe
+    # adding a row to our dataframe
     uf_dataframe = uf_dataframe.append(
         [{'id': id, 'Localidade': city, 'Faixa de CEP': cep_range}], ignore_index=True)
-    return 0
+
+    return id
 
 
 if __name__ == "__main__":
+    driver = driver_init()
+
     # all UFs
     UFs = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT',
            'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
-           
+
     # initiating pandas dataframe
     uf_dataframe = pd.DataFrame(columns=['id', 'Localidade', 'Faixa de CEP'])
 
     # scrapping first four UFs in alphabetical order
-    get_data(UFs[0:1])  
+    get_data(UFs[0:1])
 
-    #generating jsonl output
-    uf_dataframe.to_json(r'./output.jsonl',orient='records', lines=True, force_ascii=False)
+    # generating jsonl output
+    uf_dataframe.to_json(r'./output.jsonl', orient='records',
+                         lines=True, force_ascii=False)
