@@ -51,4 +51,10 @@ Run tests:
 pytest tests.py
 ```
 
-**2** module tests were made
+**3** module tests were made
+
+
+### Extra information
+
+**Chrome webdriver** file is essential to run this routine, selenium driver depends on it.
+If scraping ran with success, a file named **output.jsonl** is generated.
