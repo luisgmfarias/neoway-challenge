@@ -1,11 +1,17 @@
-from scrapping import get_data, driver_init
-from selenium import webdriver
-import pandas as pd
+from scrapping import *
+from pandas.testing import assert_frame_equal
 
-def init_dataframe():
+def test_dataframe():
     uf_dataframe = pd.DataFrame(columns=['id', 'Localidade', 'Faixa de CEP'])
 
-def test_driver():
-    driver = webdriver.Chrome(executable_path=r"driver/chromedriver")
-    assert driver_init() == driver.get('http://www.buscacep.correios.com.br/sistemas/buscacep/buscaFaixaCep.cfm')
+    exp = pd.DataFrame(data = {'id': ['504'], 'Localidade': ['Cornelio Procopio'], 'Faixa de CEP':['86300-000 à 86300-000']})
+    actual = append_df('504', 'Cornelio Procopio', '86300-000 à 86300-000')
+
+    assert_frame_equal(actual.reset_index(drop=True), exp.reset_index(drop=True))
+
+def test_scrapping():
+
+    assert get_data(['AC', 'RR']) == 'success'
+
+
 
