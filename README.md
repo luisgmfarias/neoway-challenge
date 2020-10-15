@@ -34,7 +34,7 @@ python scrapping.py SP PR PA
 Build:
 
 ```
-docker build -t scrape-docker
+docker build . -t scrape-docker
 ```
 
 Then, run:
