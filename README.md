@@ -24,6 +24,7 @@ python scrapping.py
 ```
 
 By default (without arguments), it will scrape all data from DF (Distrito Federal), ES (Espirito Santo), GO(Goias) and MA(Maranhão)
+
 **But It is possible to pass an argument, like:**
 ```
 python scrapping.py SP PR PA
@@ -57,4 +58,5 @@ pytest tests.py
 ### Extra information
 
 **Chrome webdriver** file is essential to run this routine, selenium driver depends on it.
+
 If scraping ran with success, a file named **output.jsonl** is generated.
