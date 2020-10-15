@@ -18,16 +18,15 @@ driver.get(search_page)
 
 # all UFs
 UFs = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT',
-    'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
+       'PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
 
 # initiating pandas dataframe
 uf_dataframe = pd.DataFrame(columns=['id', 'Localidade', 'Faixa de CEP'])
 
+
 def get_data(uf_list):
-    print(uf_list)
 
     for option in uf_list:
-        print(option)
         # selecting UF option on drop down menu
         driver.find_element_by_xpath(
             "//select[@name='UF']/option[text()='" + option + "']").click()
@@ -78,14 +77,24 @@ def append_df(id, city, cep_range):
     return uf_dataframe
 
 
+def verifyUF(args):
+    for uf in args:
+        if uf in UFs:
+            sys.argv[1:]
+        else:
+            print('arguments {} are not properly set '.format(sys.argv[1:]))
+            return False
+    return True
+
+
 def main():
 
-    # if dont have any args, will scrapy DF, ES, GO, MA
     if len(sys.argv) > 1:
-        get_data(sys.argv[1:])
+        if (verifyUF(sys.argv[1:])):
+            get_data(sys.argv[1:])
     else:
-        get_data(UFs[6:10]) 
-    
+        # if dont have any args, will scrapy DF, ES, GO, MA
+        get_data(UFs[6:10])
 
     driver.close()
 
