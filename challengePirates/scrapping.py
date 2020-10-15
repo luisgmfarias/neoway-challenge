@@ -79,10 +79,8 @@ def append_df(id, city, cep_range):
 
 def verifyUF(args):
     for uf in args:
-        if uf in UFs:
-            sys.argv[1:]
-        else:
-            print('arguments {} are not properly set '.format(sys.argv[1:]))
+        if uf not in UFs:
+            print('arguments {} are not properly set '.format(args))
             return False
     return True
 
