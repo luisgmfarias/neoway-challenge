@@ -13,5 +13,8 @@ def test_scrapping():
 
     assert get_data(['AC', 'RR']) == 'success'
 
+def test_verifyUF():
+    assert verifyUF(['TU', 'LY', 'A']) == False
+
 
 
