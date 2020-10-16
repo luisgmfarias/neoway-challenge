@@ -10,7 +10,7 @@ options = webdriver.ChromeOptions()
 options.add_argument('headless')
 
 # Initiating chrome webdriver
-driver = webdriver.Chrome(executable_path=r"driver/chromedriver")
+driver = webdriver.Chrome(executable_path=r"driver/chromedriver", options=options)
 
 # # BuscaCep page navigation
 search_page = "http://www.buscacep.correios.com.br/sistemas/buscacep/buscaFaixaCep.cfm"
